@@ -1,0 +1,73 @@
+name: Upstream Drift Check
+
+# Roda semanalmente e em toda push no main. Compara contra
+# lfnovo/open-notebook e avisa (não bloqueia) se algum dos arquivos que
+# o fork Orun modifica de propósito (auth, tema, docker-compose, router
+# de status) mudou também no upstream — sinal de que um merge de
+# upstream pode ter pisado numa customização.
+
+on:
+  schedule:
+    - cron: "0 9 * * 1"  # toda segunda, 09:00 UTC
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  drift-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout fork
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Add upstream remote
+        run: git remote add upstream https://github.com/lfnovo/open-notebook.git
+
+      - name: Fetch upstream
+        run: git fetch upstream main
+
+      - name: Diff pontos de integração sensíveis
+        id: diff
+        run: |
+          FILES="api/main.py api/routers/auth.py frontend/src/app/globals.css docker-compose.yml Dockerfile open_notebook/ai/provider_registry.py"
+          CHANGED=""
+          for f in $FILES; do
+            if ! git diff --quiet "upstream/main" "HEAD" -- "$f" 2>/dev/null; then
+              # arquivo difere do upstream — esperado (é onde customizamos).
+              # o que importa é se o upstream mudou o arquivo DESDE o
+              # último merge, não só que ele difere do nosso fork.
+              true
+            fi
+          done
+          # Sinaliza se o upstream teve commits novos tocando esses arquivos
+          # desde o merge-base atual do fork com ele.
+          BASE=$(git merge-base HEAD upstream/main)
+          UPSTREAM_TOUCHED=$(git diff --name-only "$BASE" upstream/main -- $FILES)
+          if [ -n "$UPSTREAM_TOUCHED" ]; then
+            echo "drift=true" >> "$GITHUB_OUTPUT"
+            echo "files<<EOF" >> "$GITHUB_OUTPUT"
+            echo "$UPSTREAM_TOUCHED" >> "$GITHUB_OUTPUT"
+            echo "EOF" >> "$GITHUB_OUTPUT"
+          else
+            echo "drift=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Abrir issue se houver drift
+        if: steps.diff.outputs.drift == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const files = `${{ steps.diff.outputs.files }}`;
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: "Upstream tocou arquivo(s) que o Orun Notebook customiza",
+              body: `O \`lfnovo/open-notebook\` teve mudanças desde o último merge nos seguintes arquivos, que o fork Orun modifica de propósito:\n\n\`\`\`\n${files}\n\`\`\`\n\nRevisar antes do próximo \`git merge upstream/main\` pra não perder a customização de auth/tema/docker.`,
+              labels: ["upstream-drift"],
+            });

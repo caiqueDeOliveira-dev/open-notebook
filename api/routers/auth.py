@@ -1,27 +1,38 @@
 """
-Authentication router for Open Notebook API.
+Authentication router for Orun Notebook API.
 Provides endpoints to check authentication status.
+
+Adaptado do original (api/routers/auth.py) — troca a checagem de
+OPEN_NOTEBOOK_PASSWORD por SUPABASE_JWT_SECRET / SUPABASE_URL, que é
+o que de fato habilita o OrunAuthMiddleware (ver api/auth_orun.py).
+
+NOTA DE DESIGN: diferente do Open Notebook original, o Orun Notebook
+não deveria ter tela de login própria — a sessão Supabase vem do shell
+do Orun Desktop (SSO), que injeta o token via header ao abrir o
+webview/iframe do Notebook. Este endpoint existe pra o frontend saber
+se deve ou não bloquear a UI esperando esse token, não pra acionar um
+formulário de login separado.
 """
 
-from fastapi import APIRouter
+import os
 
-from open_notebook.utils.encryption import get_secret_from_env
+from fastapi import APIRouter
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 
 @router.get("/status")
 async def get_auth_status():
-    """
-    Check if authentication is enabled.
-    Returns whether a password is required to access the API.
-    Supports Docker secrets via OPEN_NOTEBOOK_PASSWORD_FILE.
-    """
-    auth_enabled = bool(get_secret_from_env("OPEN_NOTEBOOK_PASSWORD"))
+    auth_enabled = bool(
+        os.environ.get("SUPABASE_JWT_SECRET") or os.environ.get("SUPABASE_URL")
+    )
 
     return {
         "auth_enabled": auth_enabled,
-        "message": "Authentication is required"
-        if auth_enabled
-        else "Authentication is disabled",
+        "provider": "orun-identity",
+        "message": (
+            "Aguardando token de sessão do Orun Desktop (SSO)"
+            if auth_enabled
+            else "Authentication is disabled"
+        ),
     }

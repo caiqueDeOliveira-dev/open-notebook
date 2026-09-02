@@ -20,7 +20,7 @@ from fastapi.responses import JSONResponse
 from loguru import logger
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
-from api.auth import PasswordAuthMiddleware
+from api.auth_orun import OrunAuthMiddleware
 from api.middleware import MaxBodySizeMiddleware, get_max_upload_size_bytes
 from api.routers import (
     auth,
@@ -232,10 +232,10 @@ if CORS_IS_DEFAULT_WILDCARD:
 else:
     logger.info(f"CORS allowed origins: {CORS_ALLOWED_ORIGINS}")
 
-# Add password authentication middleware first
-# Exclude /api/auth/status and /api/config from authentication
+# Add Orun auth middleware first (Supabase JWT + optional License JWT
+# feature gate). Exclude /api/auth/status and /api/config from auth.
 app.add_middleware(
-    PasswordAuthMiddleware,
+    OrunAuthMiddleware,
     excluded_paths=[
         "/",
         "/health",

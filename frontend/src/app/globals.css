@@ -134,8 +134,14 @@
 
 :root {
   /* --------------------------------------------------------------
-     core palette — the owned hues, red-free
+     ORUN NOTEBOOK — reskin do "Quiet Green" original.
+     --primary agora é Blood Red (identidade Orun). Pra preservar a
+     lei "red destroys, and only destroys" do sistema original,
+     --danger foi deslocado do vermelho pro laranja-queimado (clay),
+     evitando colisão semântica entre ação principal e ação destrutiva.
      -------------------------------------------------------------- */
+
+  /* core palette — the owned hues */
   --fern: #2e6b4f;
   --fern-deep: #245740;
   --fern-tint: #dfeae2;
@@ -174,29 +180,34 @@
   /* --------------------------------------------------------------
      semantic raws — surfaces, ink, hairlines, action, danger
      -------------------------------------------------------------- */
-  --bg: #f5f5f2;
-  --bg-deep: #eeeee9;
-  --surface: #fefefc;
+  /* surfaces — zinc, não off-white (identidade Orun) */
+  --bg: #f4f4f5;
+  --bg-deep: #e4e4e7;
+  --surface: #fafafa;
   --surface-raised: #ffffff;
-  --surface-recessed: #f4f4f0;
-  --surface-sunken: #ecece7;
+  --surface-recessed: #ececee;
+  --surface-sunken: #e4e4e7;
 
-  --ink: #23252a;
-  --ink-soft: #565a61;
-  --ink-faint: #878b92;
-  --ink-faintest: #a8abb1;
+  --ink: #18181b;
+  --ink-soft: #52525b;
+  --ink-faint: #71717a;
+  --ink-faintest: #a1a1aa;
 
-  --line: #e0e0da;
-  --line-soft: #e8e8e2;
-  --line-strong: #23252a;
+  --line: #d4d4d8;
+  --line-soft: #e4e4e7;
+  --line-strong: #18181b;
 
-  --primary: #2e6b4f;
-  --primary-hover: #245740;
-  --on-primary: #f1f8f3;
+  /* Blood Red — identidade primária do Orun */
+  --primary: #c8102e;
+  --primary-hover: #a30d26;
+  --on-primary: #fff1f2;
 
-  --danger: #b0432d;
-  --danger-deep: #93341f;
-  --danger-tint: #f5e4df;
+  /* danger deslocado pra um laranja-queimado (distinto do clay/warn e
+     do primary Blood Red) — mantém as três funções semânticas separadas:
+     primary = ação principal, warn = clay, danger = seu próprio tom */
+  --danger: #9a3412;
+  --danger-deep: #7c2d12;
+  --danger-tint: #fde9d9;
 
   --warn: var(--clay);
   --warn-deep: var(--clay-deep);
@@ -327,30 +338,31 @@
   --clay-deep: #f5a07a;
   --clay-tint: #35211a;
 
-  /* semantic raws */
-  --bg: #17181b;
-  --bg-deep: #121316;
-  --surface: #1e2024;
-  --surface-raised: #24262b;
-  --surface-recessed: #24262b;
-  --surface-sunken: #2b2d33;
+  /* semantic raws — zinc dark, não cinza-azulado (identidade Orun) */
+  --bg: #18181b;
+  --bg-deep: #121214;
+  --surface: #1f1f23;
+  --surface-raised: #27272a;
+  --surface-recessed: #27272a;
+  --surface-sunken: #2e2e33;
 
-  --ink: #ecedea;
-  --ink-soft: #a9acb1;
-  --ink-faint: #74777d;
-  --ink-faintest: #63666c;
+  --ink: #f4f4f5;
+  --ink-soft: #a1a1aa;
+  --ink-faint: #71717a;
+  --ink-faintest: #52525b;
 
-  --line: #2e3036;
-  --line-soft: #26282d;
-  --line-strong: #ecedea;
+  --line: #333338;
+  --line-soft: #2a2a2e;
+  --line-strong: #f4f4f5;
 
-  --primary: #3d8e67;
-  --primary-hover: #479e74;
-  --on-primary: #ecf7f0;
+  /* Blood Red, mais saturado no dark pra manter contraste/pop neon */
+  --primary: #ff2d4d;
+  --primary-hover: #ff5470;
+  --on-primary: #2b0308;
 
-  --danger: #df7c63;
-  --danger-deep: #e9937d;
-  --danger-tint: #37231d;
+  --danger: #e4691f;
+  --danger-deep: #ef8944;
+  --danger-tint: #3a230f;
 
   /* evidence washes */
   --excerpt-wash: #1c2a28;

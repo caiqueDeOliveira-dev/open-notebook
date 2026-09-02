@@ -31,8 +31,8 @@ const splineSansMono = Spline_Sans_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Open Notebook",
-  description: "Privacy-focused research and knowledge management",
+  title: "Orun Notebook",
+  description: "Pesquisa e gestão de conhecimento do ecossistema Orun",
 };
 
 export default function RootLayout({
