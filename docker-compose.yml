@@ -51,7 +51,7 @@ services:
       # Registrado como credential via POST /credentials na primeira subida
       # (ver Fase 3 do plano) — não precisa entrar aqui como env fixo, mas
       # o host fica documentado pra referência/debug.
-      - ORUN_AI_ROUTER_URL=${ORUN_AI_ROUTER_URL:-http://host.docker.internal:PORT/v1}
+      - ORUN_AI_ROUTER_URL=${ORUN_AI_ROUTER_URL:-http://host.docker.internal:4321/v1}
 
       # OPCIONAL: runtimes pesados de extração (ver docs originais do
       # Open Notebook, docs/5-CONFIGURATION/environment-reference.md)
